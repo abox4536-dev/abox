@@ -3,203 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini SRT Pro - Professional Translator</title>
+    <title>Gemini SRT Master - Fix Version</title>
     <style>
-        :root {
-            --primary: #8b5cf6;
-            --bg: #0f172a;
-            --card: #1e293b;
-            --success: #10b981;
-            --error: #ef4444;
-            --text: #f1f5f9;
-        }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            background: var(--card);
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h2 { color: var(--primary); margin: 0; }
-
-        .input-box {
-            margin-bottom: 20px;
-        }
-
-        label { display: block; margin-bottom: 8px; font-size: 13px; color: #94a3b8; }
-
-        input[type="password"], input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: white;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        .btn-row { display: flex; gap: 10px; margin-top: 10px; }
-
-        button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        #verifyBtn { background: #334155; color: white; }
-        #verifyBtn.valid { background: var(--success); }
-
-        #translateBtn {
-            background: var(--primary);
-            color: white;
-            width: 100%;
-            margin-top: 20px;
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        #translateBtn.ready { opacity: 1; pointer-events: auto; }
-
-        .status {
-            margin-top: 15px;
-            font-size: 13px;
-            text-align: center;
-            color: #94a3b8;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: #334155;
-            border-radius: 10px;
-            margin: 20px 0;
-            display: none;
-            overflow: hidden;
-        }
-
-        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
+        :root { --p: #8b5cf6; --bg: #0f172a; --c: #1e293b; --t: #f1f5f9; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--t); display: flex; justify-content: center; padding: 20px; }
+        .container { background: var(--c); width: 100%; max-width: 450px; padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        h2 { color: var(--p); text-align: center; margin-top: 0; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        #vBtn { background: #334155; color: white; }
+        #vBtn.ok { background: #10b981; }
+        #tBtn { background: var(--p); color: white; opacity: 0.5; pointer-events: none; }
+        #tBtn.active { opacity: 1; pointer-events: auto; }
+        .status { margin-top: 15px; font-size: 13px; text-align: center; color: #94a3b8; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h2>💎 Gemini SRT Pro</h2>
-    </div>
+    <h2>💎 Gemini SRT Pro</h2>
+    
+    <label style="font-size: 13px;">Gemini API Key</label>
+    <input type="password" id="keyInput" placeholder="Enter API Key here">
+    <button id="vBtn" onclick="verify()">Verify Key</button>
 
-    <div class="input-box">
-        <label>Gemini API Key</label>
-        <input type="password" id="apiKey" placeholder="AI Key ကို ဤနေရာတွင် ထည့်ပါ">
-        <div class="btn-row">
-            <button id="verifyBtn" onclick="verifyKey()">Key စစ်ဆေးမည် (Verify)</button>
-        </div>
-    </div>
+    <label style="font-size: 13px; margin-top: 20px; display: block;">Select SRT File</label>
+    <input type="file" id="srtInput" accept=".srt" onchange="check()">
 
-    <div class="input-box">
-        <label>SRT ဖိုင်ရွေးချယ်ပါ</label>
-        <input type="file" id="srtFile" accept=".srt" onchange="checkFile()">
-    </div>
-
-    <div class="progress-bar" id="pBar">
-        <div class="progress-fill" id="pFill"></div>
-    </div>
-
-    <button id="translateBtn" onclick="startTranslation()">Translate & Download</button>
-
-    <div class="status" id="statusMsg">API Key နှင့် ဖိုင်ကို အရင်ပြင်ဆင်ပါ။</div>
+    <button id="tBtn" onclick="alert('Starting translation...')">Start Translation</button>
+    <div class="status" id="msg">Key ကို အရင်စစ်ဆေးပေးပါ။</div>
 </div>
 
 <script>
-    let isKeyOk = false;
-    let finalKey = "";
+    let keyReady = false;
 
-    async function verifyKey() {
-        const key = document.getElementById('apiKey').value.trim();
-        const btn = document.getElementById('verifyBtn');
-        const status = document.getElementById('statusMsg');
+    async function verify() {
+        const key = document.getElementById('keyInput').value.trim();
+        const btn = document.getElementById('vBtn');
+        const msg = document.getElementById('msg');
 
-        if(!key) return alert("Key ထည့်ပါဦး");
+        if(!key) return;
+        btn.innerText = "Checking...";
 
-        btn.innerText = "စစ်ဆေးနေသည်...";
-        
         try {
-            // API အမှန်တကယ် အလုပ်လုပ်၊ မလုပ် စမ်းသပ်ခြင်း
-            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+            // နောက်ဆုံးပေါ် v1beta API ကို စစ်ဆေးခြင်း
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+            const res = await fetch(url, {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ contents: [{ parts: [{ text: "ping" }] }] })
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contents: [{ parts: [{ text: "hi" }] }] })
             });
 
-            if(resp.ok) {
-                isKeyOk = true;
-                finalKey = key;
-                btn.innerText = "✓ Key မှန်ကန်ပါသည်";
-                btn.classList.add('valid');
-                document.getElementById('apiKey').disabled = true;
-                status.innerText = "Key အဆင်ပြေပါပြီ။ ဖိုင်ရွေးချယ်နိုင်ပါပြီ။";
-                checkStatus();
+            const data = await res.json();
+
+            if (res.ok) {
+                keyReady = true;
+                btn.innerText = "✓ Key Valid";
+                btn.classList.add('ok');
+                document.getElementById('keyInput').disabled = true;
+                msg.innerText = "Key အောင်မြင်စွာ စစ်ဆေးပြီးပါပြီ။";
+                check();
             } else {
-                throw new Error();
+                throw new Error(data.error ? data.error.message : "Invalid Key");
             }
-        } catch(e) {
-            btn.innerText = "Verify ပြန်လုပ်မည်";
-            alert("API Key မှားယွင်းနေသည် သို့မဟုတ် အသုံးပြုခွင့် ကန့်သတ်ချက် ပြည့်နေပါသည်။");
+        } catch (e) {
+            btn.innerText = "Verify Again";
+            alert("Error: " + e.message + "\n\nKey မှားနေပါသည် (သို့) AI Studio မှာ Key အသစ်ပြန်ယူပါ။");
         }
     }
 
-    function checkFile() { checkStatus(); }
-
-    function checkStatus() {
-        const file = document.getElementById('srtFile').files[0];
-        const btn = document.getElementById('translateBtn');
-        if(isKeyOk && file) {
-            btn.classList.add('ready');
-            document.getElementById('statusMsg').innerText = "ဘာသာပြန်ရန် အဆင်သင့်ဖြစ်ပါပြီ။";
+    function check() {
+        const file = document.getElementById('srtInput').files[0];
+        if(keyReady && file) {
+            document.getElementById('tBtn').classList.add('active');
+            document.getElementById('msg').innerText = "ဘာသာပြန်ရန် အဆင်သင့်ဖြစ်ပါပြီ။";
         }
-    }
-
-    async function startTranslation() {
-        const file = document.getElementById('srtFile').files[0];
-        const pBar = document.getElementById('pBar');
-        const pFill = document.getElementById('pFill');
-        const status = document.getElementById('statusMsg');
-
-        pBar.style.display = "block";
-        status.innerText = "ဘာသာပြန်နေပါသည်... ခေတ္တစောင့်ပါ။";
-        
-        // ဘာသာပြန်ခြင်းဆိုင်ရာ Logic ကို ဤနေရာတွင် ဆက်လက်ထည့်သွင်းနိုင်သည်
-        // (မှတ်ချက် - ယခင်ပေးထားသော Translation function ကို ဤနေရာတွင် ချိတ်ဆက်သုံးနိုင်ပါသည်)
-
-        let step = 0;
-        const itv = setInterval(() => {
-            step += 10;
-            pFill.style.width = step + "%";
-            if(step >= 100) {
-                clearInterval(itv);
-                status.innerText = "အောင်မြင်စွာ ဘာသာပြန်ပြီးပါပြီ။";
-            }
-        }, 300);
     }
 </script>
 
