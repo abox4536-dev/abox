@@ -3,112 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Multi-Model Pro</title>
+    <title>Gemini Flash All - Auto Rotation</title>
     <style>
-        :root { --p: #a855f7; --bg: #09090b; --c: #18181b; --t: #f4f4f5; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--t); display: flex; justify-content: center; padding: 20px; }
-        .container { background: var(--c); width: 100%; max-width: 500px; padding: 25px; border-radius: 20px; border: 1px solid #27272a; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        h2 { text-align: center; background: linear-gradient(45deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
-        
-        label { display: block; margin-bottom: 8px; font-size: 13px; color: #a1a1aa; }
-        
-        /* Model Selection */
-        select {
-            width: 100%; padding: 12px; border-radius: 10px; background: #000; color: #fff; border: 1px solid #27272a; margin-bottom: 20px; outline: none;
+        :root {
+            --primary: #a855f7;
+            --secondary: #ec4899;
+            --bg: #09090b;
+            --card: #18181b;
+            --text: #f4f4f5;
         }
 
-        /* Large Key Input Box */
-        textarea { 
-            width: 100%; height: 120px; background: #000; color: #10b981; border: 1px solid #27272a; 
-            padding: 12px; border-radius: 12px; font-family: monospace; font-size: 12px; resize: none; box-sizing: border-box; margin-bottom: 15px;
+        body {
+            font-family: 'Inter', 'Pyidaungsu', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex; justify-content: center; padding: 20px; margin: 0;
         }
-        
-        .status-box { background: #000; padding: 12px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #27272a; font-size: 13px; display: flex; justify-content: space-between; }
-        .active-val { color: #fbbf24; font-weight: bold; }
 
-        input[type="file"] { width: 100%; margin-bottom: 20px; color: #a1a1aa; }
-        
-        button { 
-            width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; 
-            cursor: pointer; transition: 0.3s; font-size: 16px; background: var(--p); color: white;
+        .container {
+            background: var(--card);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid #27272a;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        button:disabled { background: #27272a; opacity: 0.5; cursor: not-allowed; }
 
-        #log { font-size: 11px; color: #71717a; margin-top: 15px; text-align: center; }
+        h2 {
+            text-align: center;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 10px; font-size: 14px; color: #a1a1aa; }
+
+        /* Key Input Box */
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: #000;
+            color: #10b981;
+            border: 1px solid #27272a;
+            padding: 15px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+        }
+        textarea:focus { border-color: var(--primary); }
+
+        .status-panel {
+            background: #000;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #27272a;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .indicator { color: #fbbf24; font-weight: bold; }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+        #actionBtn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        #actionBtn:disabled {
+            background: #27272a;
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .log {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #71717a;
+            text-align: center;
+            height: 40px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>💎 Gemini Pro Master</h2>
+    <h2>⚡ Gemini Flash All</h2>
 
-    <label>AI Model ကို ရွေးချယ်ပါ</label>
-    <select id="modelSelect">
-        <option value="gemini-1.5-pro">Gemini 3.1 Pro (Smartest)</option>
-        <option value="gemini-1.5-pro-002">Gemini 3.0 Pro</option>
-        <option value="gemini-1.5-flash">Gemini 3.0 Flash (Faster)</option>
-    </select>
-
-    <label>Gemini API Keys (စာကြောင်းခြားပြီး အများကြီးထည့်နိုင်သည်)</label>
-    <textarea id="keysArea" placeholder="AIzaSy...&#10;AIzaSy...&#10;AIzaSy..."></textarea>
-
-    <div class="status-box">
-        <span>Status: <span class="active-val" id="statusTxt">Idle</span></span>
-        <span>Active Key: <span class="active-val" id="activeIdx">0</span></span>
+    <div class="input-group">
+        <label>Gemini API Keys (စာကြောင်းခြားပြီး အကုန်ထည့်ပါ)</label>
+        <textarea id="multiKeys" placeholder="AIza...&#10;AIza...&#10;AIza..."></textarea>
     </div>
 
-    <label>SRT ဖိုင် ရွေးချယ်ပါ</label>
-    <input type="file" id="fileIn" accept=".srt">
+    <div class="status-panel">
+        <div>Status: <span id="currentStatus" class="indicator">Waiting...</span></div>
+        <div>Active Key: <span id="keyIndex" class="indicator">0</span></div>
+    </div>
 
-    <button id="startBtn" onclick="runFlashAll()">Verify & Translate</button>
-    
-    <div id="log">စတင်ရန် Keys များနှင့် ဖိုင်ကို အရင်ပြင်ဆင်ပါ။</div>
+    <div class="input-group">
+        <label>SRT File ရွေးချယ်ပါ</label>
+        <input type="file" id="srtFile" accept=".srt" style="width: 100%; color: #a1a1aa;">
+    </div>
+
+    <button id="actionBtn" onclick="initiateFlash()">Flash All & Start</button>
+
+    <div class="log" id="logMsg">Keys များကို စစ်ဆေးရန် အဆင်သင့်ဖြစ်ပါပြီ။</div>
 </div>
 
 <script>
-    let validKeys = [];
+    let activeKeys = [];
+    let workingKey = "";
 
-    async function runFlashAll() {
-        const keyInput = document.getElementById('keysArea').value.trim();
-        const model = document.getElementById('modelSelect').value;
-        const file = document.getElementById('fileIn').files[0];
-        const btn = document.getElementById('startBtn');
-        const log = document.getElementById('log');
+    async function initiateFlash() {
+        const rawInput = document.getElementById('multiKeys').value.trim();
+        const file = document.getElementById('srtFile').files[0];
+        const btn = document.getElementById('actionBtn');
+        const status = document.getElementById('currentStatus');
+        const log = document.getElementById('logMsg');
 
-        validKeys = keyInput.split('\n').map(k => k.trim()).filter(k => k.length > 20);
+        // Keys များကို List ပြောင်းခြင်း
+        activeKeys = rawInput.split('\n').map(k => k.trim()).filter(k => k.length > 20);
 
-        if (validKeys.length === 0) return alert("API Key ထည့်ပေးပါ။");
-        if (!file) return alert("SRT ဖိုင် ရွေးပေးပါ။");
+        if (activeKeys.length === 0) return alert("API Key အနည်းဆုံး တစ်ခု ထည့်ပေးပါ။");
+        if (!file) return alert("SRT ဖိုင် အရင်ရွေးချယ်ပါ။");
 
         btn.disabled = true;
-        log.innerText = "Scanning keys for " + model + "...";
+        status.innerText = "Scanning...";
+        
+        // Flash All Logic: အလုပ်လုပ်တဲ့ Key ကို လိုက်ရှာခြင်း
+        for (let i = 0; i < activeKeys.length; i++) {
+            log.innerText = `Testing Key ${i + 1} of ${activeKeys.length}...`;
+            document.getElementById('keyIndex').innerText = i + 1;
 
-        for (let i = 0; i < validKeys.length; i++) {
-            document.getElementById('activeIdx').innerText = i + 1;
-            const isWorking = await testKey(validKeys[i], model);
+            const isValid = await checkGeminiKey(activeKeys[i]);
             
-            if (isWorking) {
-                document.getElementById('statusTxt').innerText = "Ready";
-                document.getElementById('statusTxt').style.color = "#10b981";
-                log.innerText = "✅ Key " + (i+1) + " အဆင်ပြေပါသည်။ ဘာသာပြန်ခြင်း စတင်ပါပြီ။";
-                // SRT Translation Logic
+            if (isValid) {
+                workingKey = activeKeys[i];
+                status.innerText = "Ready!";
+                status.style.color = "#10b981";
+                log.innerText = "✅ အလုပ်လုပ်သော Key ကို တွေ့ရှိပါပြီ။ ဘာသာပြန်ခြင်း စတင်နေပါသည်။";
+                
+                // ဤနေရာတွင် ဘာသာပြန်ခြင်း Function ကို ဆက်လက်ပတ်မည်
+                // startTranslation(workingKey, file); 
                 break;
-            } else if (i === validKeys.length - 1) {
-                log.innerText = "❌ မည်သည့် Key မှ အလုပ်မလုပ်ပါ။ (Limit ပြည့်နေခြင်း ဖြစ်နိုင်သည်)";
+            }
+
+            if (i === activeKeys.length - 1 && !workingKey) {
+                status.innerText = "Failed";
+                status.style.color = "#ef4444";
+                log.innerText = "❌ မည်သည့် Key မှ အသုံးမပြုနိုင်ပါ။ Key အသစ်များ ပြန်ထည့်ပါ။";
                 btn.disabled = false;
             }
         }
     }
 
-    async function testKey(key, model) {
+    async function checkGeminiKey(key) {
         try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({contents: [{parts: [{text: "hi"}]}]})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contents: [{ parts: [{ text: "hi" }] }] })
             });
-            return res.ok;
-        } catch (e) { return false; }
+            return response.ok;
+        } catch (e) {
+            return false;
+        }
     }
 </script>
 
