@@ -59,47 +59,57 @@
         let currentKeyIndex = 0;
         let startTime;
 
-        async function startTranslation() {
-            const fileInput = document.getElementById('srtFile');
-            if (!fileInput.files[0]) return alert("ကျေးဇူးပြု၍ SRT ဖိုင်အရင်ရွေးပါ!");
+        ထဲမှာ ဒီ logic ကို အစားထိုးပါ
+async function startTranslation() {
+    const fileInput = document.getElementById('srtFile');
+    const file = fileInput.files[0];
+    const text = await file.text();
+    const lines = text.split(/\r?\n/);
+    
+    document.getElementById('statusSection').classList.remove('hidden');
+    startTime = Date.now();
 
-            const file = fileInput.files[0];
-            const text = await file.text();
-            const lines = text.split(/\r?\n/);
-            
-            document.getElementById('statusSection').classList.remove('hidden');
-            document.getElementById('startBtn').disabled = true;
-            document.getElementById('startBtn').innerText = "Translating...";
-            
-            startTime = Date.now();
-            const timerInterval = setInterval(updateTimer, 1000);
+    let translatedSrt = "";
+    let batchText = [];
+    let batchMap = [];
 
-            let translatedSrt = "";
-            const totalLines = lines.length;
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
 
-            for (let i = 0; i < totalLines; i++) {
-                let line = lines[i].trim();
-
-                // SRT Format အရ စာသားဖြစ်တဲ့နေရာကိုပဲ ဘာသာပြန်မယ်
-                if (line !== "" && !line.match(/^\d+$/) && !line.includes("-->")) {
-                    line = await translateWithGemini(line);
-                }
-
-                translatedSrt += line + "\n";
-
-                // Update UI
-                const progress = Math.round(((i + 1) / totalLines) * 100);
-                document.getElementById('progress-bar').style.width = progress + "%";
-                document.getElementById('percentText').innerText = progress + "%";
-                document.getElementById('currentLine').innerText = `Line ${i}: ${line}`;
-            }
-
-            clearInterval(timerInterval);
-            downloadFile(translatedSrt, file.name.replace(".srt", "_Burmese.srt"));
-            
-            document.getElementById('startBtn').innerText = "Finished & Downloaded!";
-            alert("ဘာသာပြန်ခြင်း အောင်မြင်စွာ ပြီးဆုံးပါပြီ!");
+        // စာသားဖြစ်ရင် batch ထဲထည့်
+        if (line !== "" && !line.match(/^\d+$/) && !line.includes("-->")) {
+            batchText.push(line);
+            batchMap.push(i);
         }
+
+        // ၅ ကြောင်းပြည့်ရင် သို့မဟုတ် ဖိုင်ဆုံးရင် ပို့မယ်
+        if (batchText.length === 5 || (i === lines.length - 1 && batchText.length > 0)) {
+            const prompt = `Translate these lines to Burmese naturally. Keep lines separated by "|||". Only return translation:\n${batchText.join("|||")}`;
+            
+            const translatedResult = await translateWithGemini(prompt);
+            const translatedArray = translatedResult.split("|||");
+
+            // မူရင်း lines ထဲ ပြန်ထည့်
+            batchMap.forEach((originalIndex, idx) => {
+                lines[originalIndex] = translatedArray[idx] || batchText[idx];
+            });
+
+            // UI Update
+            const progress = Math.round(((i + 1) / lines.length) * 100);
+            document.getElementById('progress-bar').style.width = progress + "%";
+            document.getElementById('percentText').innerText = progress + "%";
+            
+            // 🛑 ၃ စက္ကန့် နားမယ် (Rate Limit မမိအောင်)
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            batchText = [];
+            batchMap = [];
+        }
+    }
+
+    // ပြီးရင် download လုပ်မယ်
+    downloadFile(lines.join("\n"), file.name.replace(".srt", "_MM.srt"));
+}
 
         async function translateWithGemini(text) {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEYS[currentKeyIndex]}`;
