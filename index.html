@@ -10,14 +10,14 @@
         .container { background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid #30363d; width: 100%; max-width: 550px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         h2 { color: var(--primary); text-align: center; margin-bottom: 25px; }
         label { display: block; margin-bottom: 8px; font-size: 14px; color: #8b949e; }
-        input[type="file"], select, button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; font-size: 15px; }
+        input[type="file"], button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; font-size: 15px; }
         button { background: #238636; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button:hover { background: #2ea043; }
         #dlBtn { background: #0ea5e9; display: none; margin-top: 10px; }
         .progress-bar { height: 6px; background: #21262d; border-radius: 3px; overflow: hidden; display: none; margin-bottom: 10px; }
         .fill { width: 0%; height: 100%; background: var(--primary); transition: 0.4s; }
         #status { text-align: center; font-size: 14px; margin: 10px 0; color: #fbbf24; }
-        textarea { width: 100%; height: 280px; background: #010409; color: #7ee787; border: 1px solid #30363d; padding: 15px; border-radius: 8px; font-family: monospace; display: none; line-height: 1.6; resize: vertical; }
+        textarea { width: 100%; height: 280px; background: #010409; color: #7ee787; border: 1px solid #30363d; padding: 15px; border-radius: 8px; font-family: monospace; display: none; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -28,13 +28,6 @@
 
     <label>အသံဖိုင် ရွေးချယ်ပါ</label>
     <input type="file" id="audioFile" accept="audio/*">
-
-    <label>ပြောဆိုထားသည့် ဘာသာစကား</label>
-    <select id="audioLang">
-        <option value="my">မြန်မာ (Burmese) - အလိုအလျောက်မပြောင်းစေရန်</option>
-        <option value="en">English (အင်္ဂလိပ်)</option>
-        <option value="">Auto-Detect (အလိုအလျောက် သိရှိရန်)</option>
-    </select>
 
     <button id="runBtn" onclick="generateSRT()">SRT စတင်ထုတ်ယူမည်</button>
     
@@ -49,8 +42,6 @@
     async function generateSRT() {
         const file = document.getElementById('audioFile').files[0];
         const key = document.getElementById('apiKey').value;
-        const lang = document.getElementById('audioLang').value; // ဘာသာစကားရယူခြင်း
-        
         if (!file) return alert("ဖိုင်အရင်ရွေးပါ");
 
         const btn = document.getElementById('runBtn');
@@ -64,18 +55,13 @@
         pBar.style.display = 'block';
         output.style.display = 'none';
         dlBtn.style.display = 'none';
-        status.innerText = "အသံကို စာသားအဖြစ် ပြောင်းလဲနေပါသည်...";
+        status.innerText = "စကားပြောသံများကို စုစည်းနေပါသည်...";
         pFill.style.width = "40%";
 
         const formData = new FormData();
         formData.append("file", file);
         formData.append("model", "whisper-large-v3");
         formData.append("response_format", "verbose_json");
-        
-        // ဘာသာစကားရွေးထားရင် API ကိုပို့ပေးပါမည် (Auto-translate မဖြစ်စေရန်)
-        if (lang !== "") {
-            formData.append("language", lang);
-        }
 
         try {
             const response = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
@@ -87,6 +73,7 @@
             const data = await response.json();
             if (!response.ok) throw new Error(data.error?.message || "API Error");
 
+            // --- IMPROVED LOGIC: စကားစုများကို ပြန်ပေါင်းခြင်း ---
             const srtResult = processSegments(data.segments);
             
             output.value = srtResult;
@@ -101,6 +88,7 @@
         }
     }
 
+    // စကားလုံး အပိုင်းအစလေးတွေကို စုစည်းပေးမည့် function
     function processSegments(segments) {
         let finalSRT = "";
         let srtIndex = 1;
@@ -111,10 +99,12 @@
             let end = formatTime(s.end);
             let text = s.text.trim();
 
-            // ပြင်ဆင်ချက်: စာသားဖြတ်ချသည့် (slice) အပိုင်းကို ဖယ်ရှားလိုက်သည်။
-            // ကော်မာ ပါရင် အောက်တစ်ကြောင်းဆင်းပေးမယ် (စာသားမပျောက်စေရန်)
+            // ကော်မာပါရင် line ဆင်းမယ်၊ ဒါပေမဲ့ block တစ်ခုတည်းမှာပဲ ထားမယ်
             if (text.includes(',')) {
                 text = text.replace(/,\s*/g, ',\n');
+                // ၂ ကြောင်းထက် ပိုသွားရင် ဖြတ်ချမယ်
+                let lines = text.split('\n');
+                if (lines.length > 2) text = lines.slice(0, 2).join('\n');
             }
 
             finalSRT += `${srtIndex}\n${start} --> ${end}\n${text}\n\n`;
@@ -137,7 +127,7 @@
         const blob = new Blob([content], { type: 'text/srt' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url; a.download = "subtitle.srt";
+        a.href = url; a.download = "full_sentence_subtitle.srt";
         document.body.appendChild(a); a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
