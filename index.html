@@ -68,9 +68,7 @@
             if (!response.ok) {
                 throw new Error(data.error?.message || "API Error");
             }
-            // --- IMPROVED LOGIC: စကားစုများကို ပြန်ပေါင်းခြင်း ---
             const srtResult = processSegments(data.segments);
-            
             output.value = srtResult;
             output.style.display = "block";
             dlBtn.style.display = "block";
@@ -83,19 +81,16 @@
             btn.disabled = false;
         }
     }
-    // စကားလုံး အပိုင်းအစလေးတွေကို စုစည်းပေးမည့် function
+    
     function processSegments(segments) {
         let finalSRT = "";
         let srtIndex = 1;
-        for (let i = 0; i < segments.length; i++) {
-            let s = segments[i];
+        for (const s of segments) {
             let start = formatTime(s.start);
             let end = formatTime(s.end);
             let text = s.text.trim();
-            // ကော်မာပါရင် line ဆင်းမယ်၊ ဒါပေမဲ့ block တစ်ခုတည်းမှာပဲ ထားမယ်
             if (text.includes(',')) {
                 text = text.replace(/,\s*/g, ',\n');
-                // ၂ ကြောင်းထက် ပိုသွားရင် ဖြတ်ချမယ်
                 let lines = text.split('\n');
                 if (lines.length > 2) {
                     text = lines.slice(0, 2).join('\n');
@@ -106,6 +101,7 @@
         }
         return finalSRT;
     }
+
     function formatTime(seconds) {
         const date = new Date(seconds * 1000);
         const hh = String(date.getUTCHours()).padStart(2, '0');
@@ -114,9 +110,12 @@
         const ms = String(date.getUTCMilliseconds()).padStart(3, '0');
         return `${hh}:${mm}:${ss},${ms}`;
     }
+
     function downloadSrt() {
         const content = document.getElementById('output').value;
-        const blob = new Blob([content], { type: 'text/srt;charset=utf-8' });
+        // UTF-8 Byte Order Mark (BOM) ကို ဖိုင်ရဲ့အစမှာ ထည့်ပေးခြင်း
+        const bom = "\uFEFF";
+        const blob = new Blob([bom + content], { type: 'text/srt;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
