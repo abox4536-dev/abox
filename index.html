@@ -3,157 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Subtitle Master (Auto-Key)</title>
+    <title>AI Subtitle Master Pro</title>
     <style>
         :root { --accent: #00f2fe; --bg: #0d1117; --card: #161b22; }
-        body { font-family: sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; padding: 20px; min-height: 100vh; margin: 0; }
-        .card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #30363d; width: 100%; max-width: 600px; text-align: center; }
-        h2 { color: var(--accent); margin-bottom: 5px; }
-        .upload-area { border: 2px dashed #30363d; padding: 30px; border-radius: 15px; cursor: pointer; margin: 20px 0; transition: 0.3s; }
-        .upload-area:hover { border-color: var(--accent); background: rgba(0, 242, 254, 0.05); }
-        button { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: black; font-weight: bold; font-size: 16px; cursor: pointer; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; padding: 20px; min-height: 100vh; margin: 0; }
+        .card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #30363d; width: 100%; max-width: 550px; text-align: center; }
+        h2 { color: var(--accent); margin-bottom: 25px; }
+        .select-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 13px; color: #8b949e; }
+        select { width: 100%; padding: 12px; border-radius: 10px; background: #010409; color: white; border: 1px solid #30363d; outline: none; }
+        .upload-box { border: 2px dashed #30363d; padding: 40px; border-radius: 15px; cursor: pointer; transition: 0.3s; margin-bottom: 20px; }
+        .upload-box:hover { border-color: var(--accent); background: rgba(0, 242, 254, 0.05); }
+        button { width: 100%; padding: 16px; border-radius: 12px; border: none; background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #000; font-weight: bold; font-size: 16px; cursor: pointer; }
         button:disabled { background: #333; color: #666; cursor: not-allowed; }
         #status { margin: 15px 0; font-size: 14px; color: #fbbf24; font-weight: bold; }
-        .result-container { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
-        .box { flex: 1; min-width: 250px; text-align: left; }
-        label { font-size: 12px; color: #8b949e; display: block; margin-bottom: 5px; }
-        textarea { width: 100%; height: 300px; background: #010409; color: #7ee787; border: 1px solid #30363d; padding: 12px; border-radius: 10px; font-family: monospace; font-size: 12px; resize: none; display: none; }
+        textarea { width: 100%; height: 200px; background: #010409; color: #7ee787; border: 1px solid #30363d; padding: 12px; border-radius: 10px; font-family: monospace; font-size: 12px; margin-top: 15px; display: none; }
     </style>
 </head>
 <body>
 
 <div class="card">
     <h2>🎙️ AI Subtitle Master</h2>
-    <p style="font-size: 12px; color: #8b949e;">Whisper (English) + Gemini (Myanmar) Auto-Translation</p>
-
-    <div class="upload-area" onclick="document.getElementById('audioFile').click()">
-        <span id="fileLabel">အသံဖိုင် ရွေးချယ်ရန် နှိပ်ပါ</span>
-        <input type="file" id="audioFile" accept="audio/*" style="display:none" onchange="showFileName()">
-    </div>
-
-    <button id="runBtn" onclick="processAI()">စတင်လုပ်ဆောင်မည်</button>
     
-    <div id="status">အဆင်သင့်ဖြစ်ပါပြီ</div>
-
-    <div class="result-container">
-        <div class="box">
-            <label>English SRT (Original)</label>
-            <textarea id="engText" readonly></textarea>
-        </div>
-        <div class="box">
-            <label>Myanmar SRT (Translated)</label>
-            <textarea id="mmText" readonly></textarea>
-        </div>
+    <div class="select-group">
+        <label>Gemini Model ရွေးချယ်ပါ</label>
+        <select id="modelSelect">
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro (3.1)</option>
+            <option value="gemini-1.5-pro-002">Gemini 1.5 Pro (3.0)</option>
+            <option value="gemini-1.5-flash" selected>Gemini 1.5 Flash</option>
+        </select>
     </div>
+
+    <div class="upload-box" onclick="document.getElementById('audioFile').click()">
+        <span id="fileLabel">အသံဖိုင် ရွေးချယ်ပါ</span>
+        <input type="file" id="audioFile" accept="audio/*" style="display:none" onchange="updateName()">
+    </div>
+
+    <button id="runBtn" onclick="startProcess()">Start Processing</button>
+    <div id="status">Brave Shield ပိတ်ထားပေးပါ</div>
+
+    <textarea id="engOut" readonly placeholder="English Transcript"></textarea>
+    <textarea id="mmOut" readonly placeholder="Myanmar SRT Output"></textarea>
 </div>
 
 <script>
-    // Whisper Keys (7 Keys) - Encoded
-    const wKeys = ["R3NrXzJ4ZWlBU1I3S041NG9HZE9tVFZDV0dyeWIzRllQM1RXbm1INEx5RjBMNjhENlZYcnVJZWUK", "R3NrX1JyVHhKWWptSmJpSlBsdjhLZDd5V0dyeWIzRlk5ZEVRc3I5ZFI5VE1BWldQaUZhMHFiM2QK", "R3NrX0FCb2IxM2t1RjhNTUgwN2xaNVJOV0dyeWIzRlk0QmJ2S2I1MHAxQmRnaVN4bHJ1THhKUnIK", "R3NrX2pPSVdkcFpjSmpJbGNrSUs0ZWZzV0dyeWIzRll5NGlvYXZqTU1HOGdQdkNEVjhMU1VZWHYK", "R3NrXzhrc1p4MHlidUZ4ejVTMmdSWWhWV0dyeWIzRllhM1BzZnNhNnNVb1B3NnBaU2htclFEWlIK", "R3NrXzJrSlk4N3E2SUFlemVqOG1mSzRWV0dyeWIzRllqZGtZa2oxTHpWemJmYlpVMFBqNmIwZmEK", "R3NrX2wzOWNtaWNmU3c3Mjg0RFh4MEJrV0dyeWIzRllScEFJZXhtZ05FUkRaWjkzdFlwOHRJNTUK"].map(k => atob(k).trim());
+    // --- Configuration (ဆရာ့ ID နှင့် Token ထည့်ထားပြီးသားဖြစ်သည်) ---
+    const CF_ID = "44e588d3eaa53fb812cb6705e8f400a3"; 
+    const CF_TOKEN = "cfut_nbaSE8ZYTTkuQpF1G1CevaBcW0n8HqH13KmxoUV787e2fc2f"; 
+    const G_KEYS = ["AQ.Ab8RN6Ll7FJ0CEQYnWO4IQgudeaaTzEomwYOYT_QqV54-v97Uw"]; // ဆရာ့ Gemini Key တစ်ခုပဲ ထည့်ပေးဖို့ လိုပါတော့တယ်
 
-    // Gemini Keys (10 Keys) - Encoded
-    const gKeys = ["QUl6YVN5Q2VVSnI0X3VOWGthWlpud0xidmN5M1BYWDUzTHlxbl9vTQo=", "QUl6YVN5QVJ6NmVEa2k4c3VLbXdsclFkSVphVG54Z0VlVlBLbFhrCg==", "QUl6YVN5Qjd1RGZHaTdPVW9rbVA3SXBOQkdSSDhSR1dTREh6VS1VCg==", "QUl6YVN5QjZyQWN3Zy16a3pWOW9EcUR4czQ2bVo3eTZZY3I1bS1uago=", "QUl6YVN5Q210ZUxNNUJTOEhNNVBSaXN3TVNiOElnSHlGY0p6X1h3Cg==", "QUl6YVN5RGE4UU1yOTI4VXVEWUd3MGN0bmtlV05IeDBkSVc3dm8wCg==", "QUl6YVN5Qm5fd2xGM2d6QjBhWEpPZm1sbWJhUkJqRUhodlBHRnBVCg==", "QUl6YVN5QkoyQXVzUzdrdXZOVDEyM0diR3lla3NIRDd5VUx4OEFBCg==", "QUl6YVN5RFZ2MzFTZHhRTkcweDVTbVgxMGdrZFI1SXFDNmJUblo0Cg==", "QUl6YVN5QVRTd2RsUDltSjNtVG9HcS1jWFcxQXVZNXN3LUM2b2VnCg=="].map(k => atob(k).trim());
-
-    function showFileName() {
-        const file = document.getElementById('audioFile').files[0];
-        if (file) document.getElementById('fileLabel').innerText = file.name;
+    function updateName() {
+        const f = document.getElementById('audioFile').files[0];
+        if(f) document.getElementById('fileLabel').innerText = f.name;
     }
 
-    async function processAI() {
+    async function startProcess() {
         const file = document.getElementById('audioFile').files[0];
-        if (!file) return alert("ဖိုင်အရင်ရွေးပါ");
+        const model = document.getElementById('modelSelect').value;
+        if(!file) return alert("ဖိုင်အရင်ရွေးပါ");
 
         const btn = document.getElementById('runBtn');
         const status = document.getElementById('status');
-        const engArea = document.getElementById('engText');
-        const mmArea = document.getElementById('mmText');
-
         btn.disabled = true;
-        engArea.style.display = mmArea.style.display = "none";
 
-        // Step 1: Whisper Transcribe
-        let engSrt = "";
-        status.innerText = "အဆင့် (၁) - Whisper ဖြင့် စာသားထုတ်နေသည်...";
-        for (let key of wKeys) {
-            try {
-                engSrt = await getWhisper(file, key);
-                if (engSrt) break;
-            } catch (e) { console.log("Whisper Key Failed"); }
-        }
-
-        if (!engSrt) {
-            status.innerText = "Error: Whisper Key များ အလုပ်မလုပ်ပါ။";
+        status.innerText = "⏳ Cloudflare Whisper AI ဖြင့် စာသားထုတ်နေသည်...";
+        const engText = await getWhisper(file);
+        
+        if(!engText) {
+            status.innerText = "❌ Cloudflare Error: Token သို့မဟုတ် ID မှားနေပါသည်။";
             btn.disabled = false; return;
         }
 
-        engArea.value = engSrt;
-        engArea.style.display = "block";
+        document.getElementById('engOut').value = engText;
+        document.getElementById('engOut').style.display = "block";
 
-        // Step 2: Gemini Translate
-        status.innerText = "အဆင့် (၂) - Gemini ဖြင့် မြန်မာဘာသာပြန်နေသည်...";
+        status.innerText = `⏳ ${model} ဖြင့် မြန်မာပြန်နေသည်...`;
         let mmSrt = "";
-        for (let key of gKeys) {
+        for(let k of G_KEYS) {
             try {
-                mmSrt = await getGemini(engSrt, key);
-                if (mmSrt) break;
-            } catch (e) { console.log("Gemini Key Failed"); }
+                mmSrt = await getGemini(engText, k, model);
+                if(mmSrt) break;
+            } catch(e) {}
         }
 
-        if (!mmSrt) {
-            status.innerText = "Error: Gemini Key များ အလုပ်မလုပ်ပါ။";
+        if(mmSrt) {
+            document.getElementById('mmOut').value = mmSrt;
+            document.getElementById('mmOut').style.display = "block";
+            status.innerText = "✅ အားလုံး အောင်မြင်စွာ ပြီးစီးပါပြီ!";
         } else {
-            mmArea.value = mmSrt;
-            mmArea.style.display = "block";
-            status.innerText = "အားလုံး အောင်မြင်စွာ ပြီးစီးပါပြီ!";
+            status.innerText = "❌ Gemini Error: API Key ကို စစ်ဆေးပါ။";
         }
         btn.disabled = false;
     }
 
-    async function getWhisper(file, key) {
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("model", "whisper-large-v3");
-        fd.append("response_format", "verbose_json");
-        fd.append("temperature", "0");
-
-        const res = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
-            method: "POST",
-            headers: { "Authorization": `Bearer ${key}` },
-            body: fd
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error();
-
-        let srt = "";
-        data.segments.forEach((s, i) => {
-            srt += `${i+1}\n${formatTime(s.start)} --> ${formatTime(s.end)}\n${s.text.trim()}\n\n`;
-        });
-        return srt;
+    async function getWhisper(file) {
+        try {
+            const url = `https://api.cloudflare.com/client/v4/accounts/${CF_ID}/ai/run/@cf/openai/whisper`;
+            const res = await fetch(url, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${CF_TOKEN}` },
+                body: file
+            });
+            const data = await res.json();
+            return data.result.text;
+        } catch(e) { return null; }
     }
 
-    async function getGemini(text, key) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
-        const prompt = `Translate this SRT to Myanmar. Keep timestamps and SRT format exactly same. Just give the result:\n\n${text}`;
-        
-        const res = await fetch(url, {
+    async function getGemini(text, key, model) {
+        const prompt = "Please translate this transcript to Myanmar language in SRT format:\n\n" + text;
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ "contents": [{ "parts": [{ "text": prompt }] }] })
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
         });
         const data = await res.json();
-        if (!res.ok) throw new Error();
         return data.candidates[0].content.parts[0].text;
     }
-
-    function formatTime(seconds) {
-        const date = new Date(seconds * 1000);
-        const hh = String(date.getUTCHours()).padStart(2, '0');
-        const mm = String(date.getUTCMinutes()).padStart(2, '0');
-        const ss = String(date.getUTCSeconds()).padStart(2, '0');
-        const ms = String(date.getUTCMilliseconds()).padStart(3, '0');
-        return `${hh}:${mm}:${ss},${ms}`;
-    }
 </script>
-
 </body>
 </html>
