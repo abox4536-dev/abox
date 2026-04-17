@@ -16,7 +16,7 @@
         .upload-box:hover { border-color: var(--accent); background: rgba(0, 242, 254, 0.05); }
         button { width: 100%; padding: 16px; border-radius: 12px; border: none; background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #000; font-weight: bold; font-size: 16px; cursor: pointer; }
         button:disabled { background: #333; color: #666; cursor: not-allowed; }
-        #status { margin: 15px 0; font-size: 14px; color: #fbbf24; font-weight: bold; }
+        #status { margin: 15px 0; font-size: 14px; color: #fbbf24; font-weight: bold; white-space: pre-wrap; }
         textarea { width: 100%; height: 200px; background: #010409; color: #7ee787; border: 1px solid #30363d; padding: 12px; border-radius: 10px; font-family: monospace; font-size: 12px; margin-top: 15px; display: none; }
     </style>
 </head>
@@ -47,11 +47,9 @@
 </div>
 
 <script>
-    // --- Configuration (ဆရာ့ ID နှင့် Token ထည့်ထားပြီးသားဖြစ်သည်) ---
-    const CF_ID = "44e588d3eaa53fb812cb6705e8f400a3"; // မှန်ပါတယ်
-const CF_TOKEN = "cfut_nbaSE8ZYTTkuQpF1G1CevaBcW0n8HqH13KmxoUV787e2fc2f"; // Token အဟောင်းကို ဖျက်ပြီး အသစ်ထည့်ပါ
-
-    const G_KEYS = ["AQ.Ab8RN6Ll7FJ0CEQYnWO4IQgudeaaTzEomwYOYT_QqV54-v97Uw"]; // ဆရာ့ Gemini Key တစ်ခုပဲ ထည့်ပေးဖို့ လိုပါတော့တယ်
+    const CF_ID = "44e588d3eaa53fb812cb6705e8f400a3"; 
+    const CF_TOKEN = "cfut_nbaSE8ZYTTkuQpF1G1CevaBcW0n8HqH13KmxoUV787e2fc2f"; 
+    const G_KEYS = ["AQ.Ab8RN6Ll7FJ0CEQYnWO4IQgudeaaTzEomwYOYT_QqV54-v97Uw"];
 
     function updateName() {
         const f = document.getElementById('audioFile').files[0];
@@ -67,51 +65,64 @@ const CF_TOKEN = "cfut_nbaSE8ZYTTkuQpF1G1CevaBcW0n8HqH13KmxoUV787e2fc2f"; // Tok
         const status = document.getElementById('status');
         btn.disabled = true;
 
-        status.innerText = "⏳ Cloudflare Whisper AI ဖြင့် စာသားထုတ်နေသည်...";
-        const engText = await getWhisper(file);
+        status.innerText = "⏳ Cloudflare AI ဖြင့် စာသားထုတ်နေသည်...";
         
-        if(!engText) {
-            status.innerText = "❌ Cloudflare Error: Token သို့မဟုတ် ID မှားနေပါသည်။";
-            btn.disabled = false; return;
-        }
+        try {
+            const engText = await getWhisper(file);
+            
+            if(!engText) {
+                status.innerText = "❌ Cloudflare Error: Token/ID မှားနေပါသည် (သို့မဟုတ်) CORS ပိတ်ထားပါသည်။";
+                btn.disabled = false; return;
+            }
 
-        document.getElementById('engOut').value = engText;
-        document.getElementById('engOut').style.display = "block";
+            document.getElementById('engOut').value = engText;
+            document.getElementById('engOut').style.display = "block";
 
-        status.innerText = `⏳ ${model} ဖြင့် မြန်မာပြန်နေသည်...`;
-        let mmSrt = "";
-        for(let k of G_KEYS) {
-            try {
-                mmSrt = await getGemini(engText, k, model);
-                if(mmSrt) break;
-            } catch(e) {}
-        }
+            status.innerText = `⏳ ${model} ဖြင့် မြန်မာပြန်နေသည်...`;
+            let mmSrt = "";
+            for(let k of G_KEYS) {
+                try {
+                    mmSrt = await getGemini(engText, k, model);
+                    if(mmSrt) break;
+                } catch(e) {}
+            }
 
-        if(mmSrt) {
-            document.getElementById('mmOut').value = mmSrt;
-            document.getElementById('mmOut').style.display = "block";
-            status.innerText = "✅ အားလုံး အောင်မြင်စွာ ပြီးစီးပါပြီ!";
-        } else {
-            status.innerText = "❌ Gemini Error: API Key ကို စစ်ဆေးပါ။";
+            if(mmSrt) {
+                document.getElementById('mmOut').value = mmSrt;
+                document.getElementById('mmOut').style.display = "block";
+                status.innerText = "✅ အားလုံး ပြီးစီးပါပြီ!";
+            } else {
+                status.innerText = "❌ Gemini Error: API Key ကို စစ်ဆေးပါ။";
+            }
+        } catch (err) {
+            status.innerText = "❌ Error: " + err.message;
         }
         btn.disabled = false;
     }
 
     async function getWhisper(file) {
-        try {
-            const url = `https://api.cloudflare.com/client/v4/accounts/${CF_ID}/ai/run/@cf/openai/whisper`;
-            const res = await fetch(url, {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${CF_TOKEN}` },
-                body: file
-            });
-            const data = await res.json();
-            return data.result.text;
-        } catch(e) { return null; }
+        // Cloudflare Gateway ကို သုံး၍ CORS error ကို ရှောင်ရန် ကြိုးစားခြင်း
+        const url = `https://api.cloudflare.com/client/v4/accounts/${CF_ID}/ai/run/@cf/openai/whisper`;
+        
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${CF_TOKEN}`
+            },
+            body: file
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            return result.result.text;
+        } else {
+            console.error(result.errors);
+            return null;
+        }
     }
 
     async function getGemini(text, key, model) {
-        const prompt = "Please translate this transcript to Myanmar language in SRT format:\n\n" + text;
+        const prompt = "Please translate this transcript to Myanmar language in SRT format with timestamps:\n\n" + text;
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
