@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRT to Burmese - v2.5 Pro (Theme Toggle)</title>
+    <title>SRT to Burmese - Gemini AI Translator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root[data-theme="light"] {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --secondary: #10b981;
-            --accent: #f59e0b;
-            --bg: #f8fafc;
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --bg: #F8FAFC;
             --card-bg: rgba(255, 255, 255, 0.9);
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --input-bg: #ffffff;
-            --radius: 16px;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --input-bg: #FFFFFF;
+            --radius: 12px;
         }
 
         :root[data-theme="dark"] {
-            --primary: #818cf8;
-            --primary-hover: #6366f1;
-            --secondary: #34d399;
-            --accent: #fbbf24;
-            --bg: #0f172a;
+            --primary: #818CF8;
+            --primary-hover: #6366F1;
+            --secondary: #34D399;
+            --accent: #FBBF24;
+            --bg: #0F172A;
             --card-bg: rgba(30, 41, 59, 0.9);
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
+            --text-main: #F1F5F9;
+            --text-muted: #94A3B8;
             --border: #334155;
-            --input-bg: #1e293b;
-            --radius: 16px;
+            --input-bg: #1E293B;
+            --radius: 12px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,7 +48,10 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        .my-font { font-family: 'Lora', serif; }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Clash Grotesk', sans-serif;
+            font-weight: 700;
+        }
 
         header {
             background: var(--card-bg);
@@ -60,7 +63,7 @@
             z-index: 100;
         }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
 
         .nav-content { display: flex; justify-content: space-between; align-items: center; }
 
@@ -107,6 +110,13 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
 
         .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; color: var(--text-main); }
@@ -121,7 +131,7 @@
             width: 100%;
             padding: 0.75rem 1rem;
             border: 1.5px solid var(--border);
-            border-radius: 12px;
+            border-radius: 10px;
             font-family: inherit;
             font-size: 0.95rem;
             transition: all 0.2s;
@@ -129,14 +139,18 @@
             color: var(--text-main);
         }
 
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+        input:focus, select:focus, textarea:focus { 
+            outline: none; 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
 
         .toggle-eye { position: absolute; right: 1rem; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; }
 
         .btn {
             padding: 0.75rem 1.25rem;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 0.95rem;
             cursor: pointer;
@@ -148,11 +162,27 @@
             width: 100%;
         }
 
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
+        .btn-primary { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); 
+        }
 
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-primary:hover { 
+            background: var(--primary-hover); 
+            transform: translateY(-1px);
+        }
 
-        .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text-main); }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-outline { 
+            background: transparent; 
+            border: 1.5px solid var(--border); 
+            color: var(--text-main); 
+        }
 
         .btn-outline:hover { background: var(--border); }
 
@@ -164,7 +194,7 @@
             gap: 0.75rem;
             padding: 0.75rem;
             background: var(--border);
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 0.9rem;
             font-weight: 500;
@@ -190,7 +220,7 @@
             padding: 1rem 1.5rem;
             background: var(--card-bg);
             color: var(--text-main);
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
@@ -205,6 +235,24 @@
         footer { text-align: center; padding: 2rem 0; color: var(--text-muted); font-size: 0.85rem; }
 
         .hidden { display: none; }
+
+        .status-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .status-success {
+            color: var(--secondary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .status-error {
+            color: #EF4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
 
         @media (max-width: 600px) {
             .hero { padding: 1.5rem 0 1rem; }
@@ -222,7 +270,7 @@
                 <div class="logo"><span>✨</span> SRT Translator</div>
                 <div style="display: flex; align-items: center; gap: 1rem;">
                     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">v2.5 Pro</div>
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Gemini AI</div>
                 </div>
             </div>
         </div>
@@ -231,7 +279,7 @@
     <div class="container">
         <div class="hero">
             <h1>AI Subtitle Translator</h1>
-            <p class="my-font">Gemini AI ကို သုံးပြီး သင့်ရဲ့ Subtitle တွေကို သဘာဝကျကျ ဘာသာပြန်လိုက်ပါ</p>
+            <p>Gemini AI ကို သုံးပြီး သင့်ရဲ့ Subtitle တွေကို သဘာဝကျကျ ဘာသာပြန်လိုက်ပါ</p>
         </div>
 
         <div class="main-grid">
@@ -246,10 +294,10 @@
                         </div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-outline" onclick="saveKey()">💾 သိမ်းမယ်</button>
-                        <button class="btn btn-primary" onclick="verifyKey()">✅ စစ်ဆေးမယ်</button>
+                        <button class="btn btn-outline" onclick="saveKey()">💾 Save</button>
+                        <button class="btn btn-primary" onclick="verifyKey()">✅ Verify</button>
                     </div>
-                    <div id="keyStatus" style="margin-top: 0.75rem; font-size: 0.8rem; font-weight: 600;"></div>
+                    <div id="keyStatus" class="status-text hidden"></div>
                 </div>
 
                 <div class="card">
@@ -257,17 +305,16 @@
                     <div class="form-group">
                         <label>AI Model</label>
                         <select id="model">
-                            <option value="gemini-2.0-flash" selected>Gemini 2.0 Flash</option>
-                            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-                            <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
-                            <option value="gemini-2.0-flash-lite-preview-02-05">Gemini 2.0 Flash-Lite</option>
+                            <option value="gemini-2.5-pro-preview">Gemini 2.5 Pro Preview</option>
+                            <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
+                            <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro Preview</option>
+                            <option value="gemini-3-flash-preview">Gemini 3 Flash Preview</option>
+                            <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite Preview</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>SRT File</label>
-                        <input type="file" id="srtFile" accept=".srt" class="hidden">
-                        <button class="btn btn-outline" onclick="document.getElementById('srtFile').click()">📁 ဖိုင်ရွေးချယ်မယ်</button>
-                        <div id="fileInfo" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--secondary); font-weight: 600;"></div>
+                        <input type="file" id="srtFile" accept=".srt" style="padding: 0.5rem;">
                     </div>
                 </div>
 
@@ -275,20 +322,20 @@
                     <div class="card-title">📝 Options</div>
                     <div class="options-list">
                         <label class="option-item">
-                            <input type="checkbox" name="notes" value="သဘာဝကျအောင်" checked>
-                            <span>စကားပြောဟန် သဘာဝကျအောင်</span>
+                            <input type="checkbox" name="notes" value="စကားပြောဟန် သဘာဝကျအောင်" checked>
+                            <span>Natural conversational style</span>
                         </label>
                         <label class="option-item">
                             <input type="checkbox" name="notes" value="ဇာတ်ကောင်အမည်များကို မြန်မာအသံထွက်အတိုင်း ပြန်ပေးပါ" checked>
-                            <span>အမည်များကို မြန်မာအသံထွက်အတိုင်း</span>
+                            <span>Phonetic name translation</span>
                         </label>
                         <label class="option-item">
                             <input type="checkbox" name="notes" value="တစ်လိုင်း (သို့) ၂လိုင်းပဲ" checked>
-                            <span>အများဆုံး ၂ လိုင်းပဲ ထားမယ်</span>
+                            <span>Max 2 lines per subtitle</span>
                         </label>
                         <label class="option-item">
                             <input type="checkbox" name="notes" value="အချိန် format မပြောင်းနဲ့" checked>
-                            <span>အချိန် Format မပြောင်းလဲစေရ</span>
+                            <span>Preserve time format</span>
                         </label>
                     </div>
                 </div>
@@ -297,22 +344,22 @@
             <main>
                 <div class="card">
                     <div class="card-title">📄 Original Subtitles</div>
-                    <textarea id="originalSrt" placeholder="SRT ဖိုင်ကို တင်ပါ သို့မဟုတ် စာသားများကို ဒီမှာ ကူးထည့်ပါ..."></textarea>
+                    <textarea id="originalSrt" placeholder="Upload an SRT file or paste content here..."></textarea>
                 </div>
 
                 <div class="card">
                     <div class="card-title">✨ Translated Result</div>
-                    <textarea id="translatedSrt" placeholder="ဘာသာပြန်ထားတဲ့ စာသားတွေ ဒီမှာ ပေါ်လာပါမယ်..." readonly></textarea>
+                    <textarea id="translatedSrt" placeholder="Translated subtitles will appear here..." readonly></textarea>
                     
                     <div id="actionBtns" class="btn-group hidden" style="margin-top: 1.25rem;">
-                        <button class="btn btn-primary" onclick="downloadSrt()">⬇️ ဒေါင်းလုဒ်ဆွဲမယ်</button>
-                        <button class="btn btn-outline" onclick="copySrt()">📋 ကူးယူမယ်</button>
+                        <button class="btn btn-primary" onclick="downloadSrt()">⬇️ Download</button>
+                        <button class="btn btn-outline" onclick="copySrt()">📋 Copy</button>
                     </div>
                 </div>
 
                 <div class="card" style="border: none; background: transparent; box-shadow: none; padding: 0;">
-                    <button id="translateBtn" class="btn btn-primary" style="padding: 1rem; font-size: 1.1rem;" onclick="translateSubtitles()">
-                        🚀 ဘာသာပြန်ခြင်း စတင်မယ်
+                    <button id="translateBtn" class="btn btn-primary" style="padding: 1rem; font-size: 1.1rem; background: linear-gradient(to right, var(--primary), var(--secondary));" onclick="translateSubtitles()">
+                        🚀 Start Translation
                     </button>
                     
                     <div id="progressWrapper" class="progress-wrapper">
@@ -320,7 +367,7 @@
                             <div id="progressFill" class="progress-fill"></div>
                         </div>
                         <div class="progress-info">
-                            <span id="progressStatus">ဘာသာပြန်နေပါတယ်...</span>
+                            <span id="progressStatus">Translating...</span>
                             <span id="progressPercent">0%</span>
                         </div>
                     </div>
@@ -339,13 +386,11 @@
         let isKeyValid = false;
 
         window.onload = () => {
-            // Load saved API Key
             const savedKey = localStorage.getItem('gemini_api_key');
             if (savedKey) {
                 document.getElementById('apiKey').value = savedKey;
             }
 
-            // Load saved Theme
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeIcon(savedTheme);
@@ -385,24 +430,29 @@
             const status = document.getElementById('keyStatus');
             if (!key) return toast('Enter API Key', 'error');
 
-            status.innerHTML = '<span style="color:var(--primary)">⌛ စစ်ဆေးနေပါတယ်...</span>';
+            status.classList.remove('hidden');
+            status.innerHTML = '⌛ Verifying...';
+            status.className = 'status-text';
 
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
                 if (res.ok) {
                     isKeyValid = true;
-                    status.innerHTML = '<span style="color:var(--secondary)">✓ API Key is valid</span>';
+                    status.innerHTML = '✓ API Key is valid';
+                    status.className = 'status-text status-success';
                     toast('Key verification successful');
                 } else {
                     const errorData = await res.json();
                     isKeyValid = false;
-                    status.innerHTML = `<span style="color:#ef4444">✗ Invalid API Key: ${errorData.error.message || 'Check your key'}</span>`;
+                    status.innerHTML = `✗ Invalid API Key`;
+                    status.className = 'status-text status-error';
                     toast('Invalid API Key', 'error');
                 }
             } catch (e) {
                 isKeyValid = false;
-                status.innerHTML = '<span style="color:#ef4444">✗ Connection error. Check internet.</span>';
-                toast('Connection error', 'error');
+                status.innerHTML = '✗ Connection error';
+                status.className = 'status-text status-error';
+                toast('Connection error. Check internet.', 'error');
             }
         }
 
@@ -413,8 +463,7 @@
             reader.onload = (ev) => {
                 document.getElementById('originalSrt').value = ev.target.result;
                 const count = ev.target.result.split('\n\n').filter(s => s.trim()).length;
-                document.getElementById('fileInfo').textContent = `✓ Loaded ${count} subtitle blocks`;
-                toast('File uploaded successfully');
+                toast(`✓ Loaded ${count} subtitle blocks`);
             };
             reader.readAsText(file);
         });
@@ -422,7 +471,7 @@
         function toast(msg, type = 'success') {
             const t = document.createElement('div');
             t.className = 'toast';
-            if (type === 'error') t.style.borderLeftColor = '#ef4444';
+            if (type === 'error') t.style.borderLeftColor = '#EF4444';
             t.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> ${msg}`;
             document.body.appendChild(t);
             setTimeout(() => {
@@ -465,6 +514,7 @@
             const wrapper = document.getElementById('progressWrapper');
             const fill = document.getElementById('progressFill');
             const percent = document.getElementById('progressPercent');
+            const status = document.getElementById('progressStatus');
 
             btn.disabled = true;
             btn.innerHTML = '⏳ Processing...';
@@ -479,16 +529,16 @@
                     const batch = blocks.slice(i, i + batchSize).join('\n\n');
                     const prompt = `You are a professional Burmese translator. Translate the following SRT subtitle blocks into Burmese.
                     
-                    STRICT RULES:
-                    1. Keep EXACT SRT format (Index, Timecode, Text).
-                    2. Translate ONLY the text. DO NOT change timecodes.
-                    3. Tone: Natural Burmese conversational style (စကားပြောဟန်).
-                    4. Font: Standard Unicode only.
-                    5. Names: Translate character names phonetically into Burmese (e.g., "John" to "ဂျွန်", "Alice" to "အဲလစ်").
-                    6. Requirements: ${notes.join(', ')}
-                    
-                    SRT BATCH:
-                    ${batch}`;
+STRICT RULES:
+1. Keep EXACT SRT format (Index, Timecode, Text).
+2. Translate ONLY the text. DO NOT change timecodes.
+3. Tone: Natural Burmese conversational style (စကားပြောဟန်).
+4. Font: Standard Unicode only.
+5. Names: Translate character names phonetically into Burmese (e.g., "John" to "ဂျွန်", "Alice" to "အဲလစ်").
+6. Requirements: ${notes.join(', ')}
+
+SRT BATCH:
+${batch}`;
 
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
                         method: 'POST',
@@ -509,6 +559,7 @@
                     const progress = Math.min(((i + batchSize) / blocks.length) * 100, 100);
                     fill.style.width = `${progress}%`;
                     percent.textContent = `${Math.round(progress)}%`;
+                    status.textContent = `Batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(blocks.length / batchSize)}`;
                 }
 
                 document.getElementById('actionBtns').classList.remove('hidden');
@@ -517,7 +568,7 @@
                 toast(`Error: ${e.message}`, 'error');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '🚀 ဘာသာပြန်ခြင်း စတင်မယ်';
+                btn.innerHTML = '🚀 Start Translation';
             }
         }
     </script>
