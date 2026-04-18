@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="my" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRT to Burmese - v2.3 Pro (All Gemini Models)</title>
+    <title>SRT to Burmese - v2.5 Pro (Theme Toggle)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root {
+        :root[data-theme="light"] {
             --primary: #6366f1;
             --primary-hover: #4f46e5;
             --secondary: #10b981;
@@ -18,6 +18,21 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border: #e2e8f0;
+            --input-bg: #ffffff;
+            --radius: 16px;
+        }
+
+        :root[data-theme="dark"] {
+            --primary: #818cf8;
+            --primary-hover: #6366f1;
+            --secondary: #34d399;
+            --accent: #fbbf24;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.9);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --input-bg: #1e293b;
             --radius: 16px;
         }
 
@@ -25,17 +40,18 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at top left, #eef2ff, #f8fafc);
+            background: var(--bg);
             color: var(--text-main);
             min-height: 100vh;
             line-height: 1.6;
             padding-bottom: 2rem;
+            transition: background 0.3s, color 0.3s;
         }
 
         .my-font { font-family: 'Lora', serif; }
 
         header {
-            background: rgba(255, 255, 255, 0.8);
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             padding: 1rem 0;
@@ -49,6 +65,23 @@
         .nav-content { display: flex; justify-content: space-between; align-items: center; }
 
         .logo { font-size: 1.25rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+
+        .theme-toggle {
+            background: var(--border);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .theme-toggle:hover { transform: scale(1.1); }
 
         .hero { padding: 2.5rem 0 1.5rem; text-align: center; }
 
@@ -69,14 +102,14 @@
 
         .card {
             background: var(--card-bg);
-            border: 1px solid white;
+            border: 1px solid var(--border);
             border-radius: var(--radius);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
-        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; color: #334155; }
+        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; color: var(--text-main); }
 
         .form-group { margin-bottom: 1.25rem; }
 
@@ -92,7 +125,8 @@
             font-family: inherit;
             font-size: 0.95rem;
             transition: all 0.2s;
-            background: white;
+            background: var(--input-bg);
+            color: var(--text-main);
         }
 
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
@@ -118,9 +152,9 @@
 
         .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
 
-        .btn-outline { background: white; border: 1.5px solid var(--border); color: var(--text-main); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text-main); }
 
-        .btn-outline:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .btn-outline:hover { background: var(--border); }
 
         .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 
@@ -129,7 +163,7 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.75rem;
-            background: #f1f5f9;
+            background: var(--border);
             border-radius: 12px;
             cursor: pointer;
             font-size: 0.9rem;
@@ -139,11 +173,11 @@
 
         input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: var(--primary); }
 
-        textarea { min-height: 280px; font-family: 'Courier New', monospace; font-size: 0.9rem; resize: vertical; background: #fcfcfc; }
+        textarea { min-height: 280px; font-family: 'Courier New', monospace; font-size: 0.9rem; resize: vertical; }
 
         .progress-wrapper { margin-top: 1.5rem; display: none; }
 
-        .progress-bar { height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem; }
+        .progress-bar { height: 10px; background: var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem; }
 
         .progress-fill { height: 100%; width: 0%; background: linear-gradient(to right, var(--primary), var(--secondary)); transition: width 0.4s ease; }
 
@@ -154,7 +188,8 @@
             bottom: 2rem;
             right: 2rem;
             padding: 1rem 1.5rem;
-            background: white;
+            background: var(--card-bg);
+            color: var(--text-main);
             border-radius: 12px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             display: flex;
@@ -185,7 +220,10 @@
         <div class="container">
             <div class="nav-content">
                 <div class="logo"><span>✨</span> SRT Translator</div>
-                <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">v2.3 Pro (All Models)</div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">v2.5 Pro</div>
+                </div>
             </div>
         </div>
     </header>
@@ -219,16 +257,10 @@
                     <div class="form-group">
                         <label>AI Model</label>
                         <select id="model">
-                            <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
-                            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                            <option value="gemini-2.0-flash" selected>Gemini 2.0 Flash</option>
                             <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-                            <option value="gemini-1.5-pro">Gemini Pro</option>
-                            <option value="gemini-3.0-flash-preview">Gemini 3 Flash Preview</option>
-                            <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro Preview</option>
-                            <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite Preview</option>
+                            <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
                             <option value="gemini-2.0-flash-lite-preview-02-05">Gemini 2.0 Flash-Lite</option>
-                            <option value="gemini-2.5-flash-preview-tts">Gemini 2.5 Flash Preview TTS</option>
-                            <option value="gemini-2.5-pro-preview-tts">Gemini 2.5 Pro Preview TTS</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -245,6 +277,10 @@
                         <label class="option-item">
                             <input type="checkbox" name="notes" value="သဘာဝကျအောင်" checked>
                             <span>စကားပြောဟန် သဘာဝကျအောင်</span>
+                        </label>
+                        <label class="option-item">
+                            <input type="checkbox" name="notes" value="ဇာတ်ကောင်အမည်များကို မြန်မာအသံထွက်အတိုင်း ပြန်ပေးပါ" checked>
+                            <span>အမည်များကို မြန်မာအသံထွက်အတိုင်း</span>
                         </label>
                         <label class="option-item">
                             <input type="checkbox" name="notes" value="တစ်လိုင်း (သို့) ၂လိုင်းပဲ" checked>
@@ -303,12 +339,31 @@
         let isKeyValid = false;
 
         window.onload = () => {
-            const saved = localStorage.getItem('gemini_api_key');
-            if (saved) {
-                document.getElementById('apiKey').value = saved;
-                toast('Saved API Key loaded');
+            // Load saved API Key
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                document.getElementById('apiKey').value = savedKey;
             }
+
+            // Load saved Theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
         };
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            toast(`Switched to ${newTheme} mode`);
+        }
+
+        function updateThemeIcon(theme) {
+            const btn = document.getElementById('themeToggle');
+            btn.innerHTML = theme === 'light' ? '🌙' : '☀️';
+        }
 
         function toggleKey() {
             const input = document.getElementById('apiKey');
@@ -429,7 +484,8 @@
                     2. Translate ONLY the text. DO NOT change timecodes.
                     3. Tone: Natural Burmese conversational style (စကားပြောဟန်).
                     4. Font: Standard Unicode only.
-                    5. Requirements: ${notes.join(', ')}
+                    5. Names: Translate character names phonetically into Burmese (e.g., "John" to "ဂျွန်", "Alice" to "အဲလစ်").
+                    6. Requirements: ${notes.join(', ')}
                     
                     SRT BATCH:
                     ${batch}`;
