@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRT to Burmese - Modern AI Translator</title>
+    <title>SRT to Burmese - v2.3 Pro (All Gemini Models)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,18 +14,14 @@
             --secondary: #10b981;
             --accent: #f59e0b;
             --bg: #f8fafc;
-            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.9);
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --radius: 12px;
+            --radius: 16px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -38,44 +34,23 @@
 
         .my-font { font-family: 'Lora', serif; }
 
-        /* Header Section */
         header {
-            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.8);
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 1.25rem;
-        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem; }
 
-        .nav-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
 
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+        .logo { font-size: 1.25rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
 
-        /* Hero Section */
-        .hero {
-            padding: 3rem 0 2rem;
-            text-align: center;
-        }
+        .hero { padding: 2.5rem 0 1.5rem; text-align: center; }
 
         .hero h1 {
             font-size: clamp(1.75rem, 5vw, 2.5rem);
@@ -86,98 +61,48 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .hero p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+        .hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
 
-        /* Main Grid Layout */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
+        .main-grid { display: grid; grid-template-columns: 380px 1fr; gap: 1.5rem; margin-top: 1rem; }
 
-        @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
 
-        /* Card Styles */
         .card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
             border: 1px solid white;
             border-radius: var(--radius);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            transition: transform 0.2s ease;
         }
 
-        .card-title {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            color: #334155;
-        }
+        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; color: #334155; }
 
-        /* Form Elements */
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
+        .form-group { margin-bottom: 1.25rem; }
 
-        label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-muted);
-        }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted); }
 
-        .input-box {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+        .input-box { position: relative; display: flex; align-items: center; }
 
         input, select, textarea {
             width: 100%;
             padding: 0.75rem 1rem;
             border: 1.5px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             font-family: inherit;
             font-size: 0.95rem;
             transition: all 0.2s;
             background: white;
         }
 
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
 
-        .toggle-eye {
-            position: absolute;
-            right: 1rem;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
+        .toggle-eye { position: absolute; right: 1rem; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; }
 
-        /* Buttons */
         .btn {
             padding: 0.75rem 1.25rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 600;
             font-size: 0.95rem;
             cursor: pointer;
@@ -189,40 +114,15 @@
             width: 100%;
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-        }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
 
-        .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-        }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
 
-        .btn-outline {
-            background: white;
-            border: 1.5px solid var(--border);
-            color: var(--text-main);
-        }
+        .btn-outline { background: white; border: 1.5px solid var(--border); color: var(--text-main); }
 
-        .btn-outline:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-        }
+        .btn-outline:hover { background: #f1f5f9; border-color: #cbd5e1; }
 
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-        }
-
-        /* Checkbox Styles */
-        .options-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 
         .option-item {
             display: flex;
@@ -230,63 +130,25 @@
             gap: 0.75rem;
             padding: 0.75rem;
             background: #f1f5f9;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 0.9rem;
             font-weight: 500;
-        }
-
-        input[type="checkbox"] {
-            width: 1.2rem;
-            height: 1.2rem;
-            accent-color: var(--primary);
-        }
-
-        /* Textarea Layout */
-        .editor-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        textarea {
-            min-height: 280px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            resize: vertical;
-            background: #fcfcfc;
-        }
-
-        /* Progress Bar */
-        .progress-wrapper {
-            margin-top: 1.5rem;
-            display: none;
-        }
-
-        .progress-bar {
-            height: 10px;
-            background: #e2e8f0;
-            border-radius: 10px;
-            overflow: hidden;
             margin-bottom: 0.5rem;
         }
 
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            transition: width 0.4s ease;
-        }
+        input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: var(--primary); }
 
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-muted);
-        }
+        textarea { min-height: 280px; font-family: 'Courier New', monospace; font-size: 0.9rem; resize: vertical; background: #fcfcfc; }
 
-        /* Toast */
+        .progress-wrapper { margin-top: 1.5rem; display: none; }
+
+        .progress-bar { height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem; }
+
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(to right, var(--primary), var(--secondary)); transition: width 0.4s ease; }
+
+        .progress-info { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
+
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -303,24 +165,14 @@
             animation: slideUp 0.3s ease forwards;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem 0;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
+        footer { text-align: center; padding: 2rem 0; color: var(--text-muted); font-size: 0.85rem; }
 
         .hidden { display: none; }
 
-        /* Mobile Specific Adjustments */
         @media (max-width: 600px) {
-            .hero { padding: 2rem 0 1rem; }
+            .hero { padding: 1.5rem 0 1rem; }
             .card { padding: 1.25rem; }
             .btn-group { grid-template-columns: 1fr; }
             .toast { left: 1rem; right: 1rem; bottom: 1rem; }
@@ -332,12 +184,8 @@
     <header>
         <div class="container">
             <div class="nav-content">
-                <div class="logo">
-                    <span>✨</span> SRT Translator
-                </div>
-                <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">
-                    v2.0 Pro
-                </div>
+                <div class="logo"><span>✨</span> SRT Translator</div>
+                <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">v2.3 Pro (All Models)</div>
             </div>
         </div>
     </header>
@@ -349,7 +197,6 @@
         </div>
 
         <div class="main-grid">
-            <!-- Sidebar Controls -->
             <aside>
                 <div class="card">
                     <div class="card-title">🔑 API Configuration</div>
@@ -372,10 +219,16 @@
                     <div class="form-group">
                         <label>AI Model</label>
                         <select id="model">
-                            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-                            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
                             <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
-                            <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                            <option value="gemini-1.5-pro">Gemini Pro</option>
+                            <option value="gemini-3.0-flash-preview">Gemini 3 Flash Preview</option>
+                            <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro Preview</option>
+                            <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite Preview</option>
+                            <option value="gemini-2.0-flash-lite-preview-02-05">Gemini 2.0 Flash-Lite</option>
+                            <option value="gemini-2.5-flash-preview-tts">Gemini 2.5 Flash Preview TTS</option>
+                            <option value="gemini-2.5-pro-preview-tts">Gemini 2.5 Pro Preview TTS</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -405,7 +258,6 @@
                 </div>
             </aside>
 
-            <!-- Main Editor Area -->
             <main>
                 <div class="card">
                     <div class="card-title">📄 Original Subtitles</div>
@@ -450,12 +302,11 @@
     <script>
         let isKeyValid = false;
 
-        // Initialize
         window.onload = () => {
             const saved = localStorage.getItem('gemini_api_key');
             if (saved) {
                 document.getElementById('apiKey').value = saved;
-                toast('Saved API Key loaded successfully');
+                toast('Saved API Key loaded');
             }
         };
 
@@ -479,22 +330,23 @@
             const status = document.getElementById('keyStatus');
             if (!key) return toast('Enter API Key', 'error');
 
+            status.innerHTML = '<span style="color:var(--primary)">⌛ စစ်ဆေးနေပါတယ်...</span>';
+
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: 'hi' }] }] })
-                });
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
                 if (res.ok) {
                     isKeyValid = true;
                     status.innerHTML = '<span style="color:var(--secondary)">✓ API Key is valid</span>';
                     toast('Key verification successful');
                 } else {
+                    const errorData = await res.json();
                     isKeyValid = false;
-                    status.innerHTML = '<span style="color:#ef4444">✗ Invalid API Key</span>';
+                    status.innerHTML = `<span style="color:#ef4444">✗ Invalid API Key: ${errorData.error.message || 'Check your key'}</span>`;
                     toast('Invalid API Key', 'error');
                 }
             } catch (e) {
+                isKeyValid = false;
+                status.innerHTML = '<span style="color:#ef4444">✗ Connection error. Check internet.</span>';
                 toast('Connection error', 'error');
             }
         }
@@ -588,6 +440,11 @@
                         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                     });
 
+                    if (!res.ok) {
+                        const err = await res.json();
+                        throw new Error(err.error.message || 'API Error');
+                    }
+
                     const data = await res.json();
                     const translated = data.candidates[0].content.parts[0].text.replace(/```srt/g, '').replace(/```/g, '').trim();
                     fullResult += translated + '\n\n';
@@ -601,7 +458,7 @@
                 document.getElementById('actionBtns').classList.remove('hidden');
                 toast('Translation completed!');
             } catch (e) {
-                toast('Translation failed', 'error');
+                toast(`Error: ${e.message}`, 'error');
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '🚀 ဘာသာပြန်ခြင်း စတင်မယ်';
