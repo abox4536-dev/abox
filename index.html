@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="my" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRT to Burmese - Gemini AI Translator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root[data-theme="light"] {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --bg: #F8FAFC;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --input-bg: #FFFFFF;
+            --radius: 12px;
+        }
+
+        :root[data-theme="dark"] {
+            --primary: #818CF8;
+            --primary-hover: #6366F1;
+            --secondary: #34D399;
+            --accent: #FBBF24;
+            --bg: #0F172A;
+            --card-bg: rgba(30, 41, 59, 0.9);
+            --text-main: #F1F5F9;
+            --text-muted: #94A3B8;
+            --border: #334155;
+            --input-bg: #1E293B;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding-bottom: 2rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Clash Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        header {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
+
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+
+        .logo { font-size: 1.25rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+
+        .theme-toggle {
+            background: var(--border);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .theme-toggle:hover { transform: scale(1.1); }
+
+        .hero { padding: 2.5rem 0 1.5rem; text-align: center; }
+
+        .hero h1 {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+        .main-grid { display: grid; grid-template-columns: 380px 1fr; gap: 1.5rem; margin-top: 1rem; }
+
+        @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; color: var(--text-main); }
+
+        .form-group { margin-bottom: 1.25rem; }
+
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted); }
+
+        .input-box { position: relative; display: flex; align-items: center; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        input:focus, select:focus, textarea:focus { 
+            outline: none; 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .toggle-eye { position: absolute; right: 1rem; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; }
+
+        .btn {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .btn-primary { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); 
+        }
+
+        .btn-primary:hover { 
+            background: var(--primary-hover); 
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-outline { 
+            background: transparent; 
+            border: 1.5px solid var(--border); 
+            color: var(--text-main); 
+        }
+
+        .btn-outline:hover { background: var(--border); }
+
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: var(--primary); }
+
+        textarea { min-height: 280px; font-family: 'Courier New', monospace; font-size: 0.9rem; resize: vertical; }
+
+        .progress-wrapper { margin-top: 1.5rem; display: none; }
+
+        .progress-bar { height: 10px; background: var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem; }
+
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(to right, var(--primary), var(--secondary)); transition: width 0.4s ease; }
+
+        .progress-info { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-main);
+            border-radius: 10px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1000;
+            border-left: 4px solid var(--primary);
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        footer { text-align: center; padding: 2rem 0; color: var(--text-muted); font-size: 0.85rem; }
+
+        .hidden { display: none; }
+
+        .status-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .status-success {
+            color: var(--secondary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .status-error {
+            color: #EF4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        @media (max-width: 600px) {
+            .hero { padding: 1.5rem 0 1rem; }
+            .card { padding: 1.25rem; }
+            .btn-group { grid-template-columns: 1fr; }
+            .toast { left: 1rem; right: 1rem; bottom: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo"><span>✨</span> SRT Translator</div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Gemini AI</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="hero">
+            <h1>AI Subtitle Translator</h1>
+            <p>Gemini AI ကို သုံးပြီး သင့်ရဲ့ Subtitle တွေကို သဘာဝကျကျ ဘာသာပြန်လိုက်ပါ</p>
+        </div>
+
+        <div class="main-grid">
+            <aside>
+                <div class="card">
+                    <div class="card-title">🔑 API Configuration</div>
+                    <div class="form-group">
+                        <label>Google Gemini API Key</label>
+                        <div class="input-box">
+                            <input type="password" id="apiKey" placeholder="Enter your key here...">
+                            <span class="toggle-eye" onclick="toggleKey()">👁️</span>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-outline" onclick="saveKey()">💾 Save</button>
+                        <button class="btn btn-primary" onclick="verifyKey()">✅ Verify</button>
+                    </div>
+                    <div id="keyStatus" class="status-text hidden"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">⚙️ Translation Settings</div>
+                    <div class="form-group">
+                        <label>AI Model</label>
+                        <select id="model">
+                            <option value="gemini-2.5-pro-preview">Gemini 2.5 Pro Preview</option>
+                            <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
+                            <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro Preview</option>
+                            <option value="gemini-3-flash-preview">Gemini 3 Flash Preview</option>
+                            <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite Preview</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>SRT File</label>
+                        <input type="file" id="srtFile" accept=".srt" style="padding: 0.5rem;">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📝 Options</div>
+                    <div class="options-list">
+                        <label class="option-item">
+                            <input type="checkbox" name="notes" value="စကားပြောဟန် သဘာဝကျအောင်" checked>
+                            <span>Natural conversational style</span>
+                        </label>
+                        <label class="option-item">
+                            <input type="checkbox" name="notes" value="ဇာတ်ကောင်အမည်များကို မြန်မာအသံထွက်အတိုင်း ပြန်ပေးပါ" checked>
+                            <span>Phonetic name translation</span>
+                        </label>
+                        <label class="option-item">
+                            <input type="checkbox" name="notes" value="တစ်လိုင်း (သို့) ၂လိုင်းပဲ" checked>
+                            <span>Max 2 lines per subtitle</span>
+                        </label>
+                        <label class="option-item">
+                            <input type="checkbox" name="notes" value="အချိန် format မပြောင်းနဲ့" checked>
+                            <span>Preserve time format</span>
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <main>
+                <div class="card">
+                    <div class="card-title">📄 Original Subtitles</div>
+                    <textarea id="originalSrt" placeholder="Upload an SRT file or paste content here..."></textarea>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">✨ Translated Result</div>
+                    <textarea id="translatedSrt" placeholder="Translated subtitles will appear here..." readonly></textarea>
+                    
+                    <div id="actionBtns" class="btn-group hidden" style="margin-top: 1.25rem;">
+                        <button class="btn btn-primary" onclick="downloadSrt()">⬇️ Download</button>
+                        <button class="btn btn-outline" onclick="copySrt()">📋 Copy</button>
+                    </div>
+                </div>
+
+                <div class="card" style="border: none; background: transparent; box-shadow: none; padding: 0;">
+                    <button id="translateBtn" class="btn btn-primary" style="padding: 1rem; font-size: 1.1rem; background: linear-gradient(to right, var(--primary), var(--secondary));" onclick="translateSubtitles()">
+                        🚀 Start Translation
+                    </button>
+                    
+                    <div id="progressWrapper" class="progress-wrapper">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span id="progressStatus">Translating...</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 AI Subtitle Translator. Powered by <b>Google Gemini</b></p>
+        </div>
+    </footer>
+
+    <script>
+        let isKeyValid = false;
+
+        window.onload = () => {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                document.getElementById('apiKey').value = savedKey;
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        };
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            toast(`Switched to ${newTheme} mode`);
+        }
+
+        function updateThemeIcon(theme) {
+            const btn = document.getElementById('themeToggle');
+            btn.innerHTML = theme === 'light' ? '🌙' : '☀️';
+        }
+
+        function toggleKey() {
+            const input = document.getElementById('apiKey');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function saveKey() {
+            const key = document.getElementById('apiKey').value.trim();
+            if (key) {
+                localStorage.setItem('gemini_api_key', key);
+                toast('API Key saved to browser');
+            } else {
+                toast('Please enter a key first', 'error');
+            }
+        }
+
+        async function verifyKey() {
+            const key = document.getElementById('apiKey').value.trim();
+            const status = document.getElementById('keyStatus');
+            if (!key) return toast('Enter API Key', 'error');
+
+            status.classList.remove('hidden');
+            status.innerHTML = '⌛ Verifying...';
+            status.className = 'status-text';
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+                if (res.ok) {
+                    isKeyValid = true;
+                    status.innerHTML = '✓ API Key is valid';
+                    status.className = 'status-text status-success';
+                    toast('Key verification successful');
+                } else {
+                    const errorData = await res.json();
+                    isKeyValid = false;
+                    status.innerHTML = `✗ Invalid API Key`;
+                    status.className = 'status-text status-error';
+                    toast('Invalid API Key', 'error');
+                }
+            } catch (e) {
+                isKeyValid = false;
+                status.innerHTML = '✗ Connection error';
+                status.className = 'status-text status-error';
+                toast('Connection error. Check internet.', 'error');
+            }
+        }
+
+        document.getElementById('srtFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('originalSrt').value = ev.target.result;
+                const count = ev.target.result.split('\n\n').filter(s => s.trim()).length;
+                toast(`✓ Loaded ${count} subtitle blocks`);
+            };
+            reader.readAsText(file);
+        });
+
+        function toast(msg, type = 'success') {
+            const t = document.createElement('div');
+            t.className = 'toast';
+            if (type === 'error') t.style.borderLeftColor = '#EF4444';
+            t.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> ${msg}`;
+            document.body.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                t.style.transform = 'translateY(20px)';
+                setTimeout(() => t.remove(), 300);
+            }, 3000);
+        }
+
+        function copySrt() {
+            const area = document.getElementById('translatedSrt');
+            area.select();
+            document.execCommand('copy');
+            toast('Copied to clipboard');
+        }
+
+        function downloadSrt() {
+            const content = document.getElementById('translatedSrt').value;
+            if (!content) return;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'translated_burmese.srt';
+            a.click();
+            URL.revokeObjectURL(url);
+            toast('Downloading file...');
+        }
+
+        async function translateSubtitles() {
+            const key = document.getElementById('apiKey').value.trim();
+            const model = document.getElementById('model').value;
+            const content = document.getElementById('originalSrt').value.trim();
+            const notes = Array.from(document.querySelectorAll('input[name="notes"]:checked')).map(c => c.value);
+
+            if (!isKeyValid) return toast('Please verify API Key first', 'error');
+            if (!content) return toast('No SRT content found', 'error');
+
+            const btn = document.getElementById('translateBtn');
+            const wrapper = document.getElementById('progressWrapper');
+            const fill = document.getElementById('progressFill');
+            const percent = document.getElementById('progressPercent');
+            const status = document.getElementById('progressStatus');
+
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Processing...';
+            wrapper.style.display = 'block';
+
+            try {
+                const blocks = content.split('\n\n').filter(b => b.trim());
+                const batchSize = 10;
+                let fullResult = '';
+
+                for (let i = 0; i < blocks.length; i += batchSize) {
+                    const batch = blocks.slice(i, i + batchSize).join('\n\n');
+                    const prompt = `You are a professional Burmese translator. Translate the following SRT subtitle blocks into Burmese.
+                    
+STRICT RULES:
+1. Keep EXACT SRT format (Index, Timecode, Text).
+2. Translate ONLY the text. DO NOT change timecodes.
+3. Tone: Natural Burmese conversational style (စကားပြောဟန်).
+4. Font: Standard Unicode only.
+5. Names: Translate character names phonetically into Burmese (e.g., "John" to "ဂျွန်", "Alice" to "အဲလစ်").
+6. Requirements: ${notes.join(', ')}
+
+SRT BATCH:
+${batch}`;
+
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json();
+                        throw new Error(err.error.message || 'API Error');
+                    }
+
+                    const data = await res.json();
+                    const translated = data.candidates[0].content.parts[0].text.replace(/```srt/g, '').replace(/```/g, '').trim();
+                    fullResult += translated + '\n\n';
+                    document.getElementById('translatedSrt').value = fullResult.trim();
+                    
+                    const progress = Math.min(((i + batchSize) / blocks.length) * 100, 100);
+                    fill.style.width = `${progress}%`;
+                    percent.textContent = `${Math.round(progress)}%`;
+                    status.textContent = `Batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(blocks.length / batchSize)}`;
+                }
+
+                document.getElementById('actionBtns').classList.remove('hidden');
+                toast('Translation completed!');
+            } catch (e) {
+                toast(`Error: ${e.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🚀 Start Translation';
+            }
+        }
+    </script>
+</body>
+</html>
